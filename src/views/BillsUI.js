@@ -20,27 +20,30 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  data.map((setNewMonth) => {
-    if(setNewMonth.date.includes('Fév')) {
-       setNewMonth.date = setNewMonth.date.replace('Fév','Feb')
-    } else if(setNewMonth.date.includes('Avr')) {
-      setNewMonth.date = setNewMonth.date.replace('Avr','Apr')
-    }
-    else if(setNewMonth.date.includes('Mai')) {
-      setNewMonth.date = setNewMonth.date.replace('Mai','May')
-    }
-    else if(setNewMonth.date.includes('Jui')) {
-      setNewMonth.date = setNewMonth.date.replace('Jui','Jun')
-    }
-    else if(setNewMonth.date.includes('Aoû')) {
-      setNewMonth.date = setNewMonth.date.replace('Aoû','Aug')
-    }
-    else if(setNewMonth.date.includes('Déc')) {
-      setNewMonth.date = setNewMonth.date.replace('Déc','Dec')
-    }
-  })
-  data.sort((a, b) =>{return Date.parse(b.date) - Date.parse(a.date)})
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  if(data && data.length) {
+    data.forEach((setNewMonth) => {
+      if(setNewMonth.date.includes('Fév')) {
+         setNewMonth.date = setNewMonth.date.replace('Fév','Feb')
+      } else if(setNewMonth.date.includes('Avr')) {
+        setNewMonth.date = setNewMonth.date.replace('Avr','Apr')
+      }
+      else if(setNewMonth.date.includes('Mai')) {
+        setNewMonth.date = setNewMonth.date.replace('Mai','May')
+      }
+      else if(setNewMonth.date.includes('Jui')) {
+        setNewMonth.date = setNewMonth.date.replace('Jui','Jun')
+      }
+      else if(setNewMonth.date.includes('Aoû')) {
+        setNewMonth.date = setNewMonth.date.replace('Aoû','Aug')
+      }
+      else if(setNewMonth.date.includes('Déc')) {
+        setNewMonth.date = setNewMonth.date.replace('Déc','Dec')
+      }
+    })
+    data.sort((a, b) =>{return Date.parse(b.date) - Date.parse(a.date)})
+  }
+  return (
+    (data && data.length) ? data.map(bill => row(bill)).join("") : "")
 }
 
 export default ({ data: bills, loading, error }) => {
