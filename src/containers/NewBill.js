@@ -15,18 +15,42 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+
+  isFileExtensionValid(file) {
+    function getExtension(fileName) {
+      const ext = fileName.split('.');
+      return ext[ext.length - 1].toLowerCase();
+    }
+
+    const fileFormatValid = ["jpg", "jpeg", "png"];
+      
+    let isValid = false;
+    const extension = getExtension(file)
+    fileFormatValid.map(type => {
+      if (extension === type) {
+        return isValid = true;
+      }
+    })
+    return isValid;
+  }
+
+  isReturningValidFile(fileName, input) {
+    if (this.isFileExtensionValid(fileName)) {
+      return fileName;
+    } else {
+      input.value = null      
+      throw new Error('Please select a file with the extension jpg, jpeg or png')
+    }
+  }
+
   handleChangeFile = e => {
     e.preventDefault()
-    const inputFile = this.document.querySelector(`input[data-testid="file"]`);
-    const file = inputFile.files[0];
+    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
-    const fileExtractExtension = fileName.split(".").pop();
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
-    const fileFormat = ["jpg", "jpeg", "png"];
 
-    if (fileFormat.includes(fileExtractExtension)) {
       formData.append('file', file)
       formData.append('email', email)
 
@@ -39,17 +63,10 @@ export default class NewBill {
           }
         })
         .then(({fileUrl, key}) => {
-          console.log(fileUrl)
           this.billId = key
           this.fileUrl = fileUrl
-          this.fileName = fileName
+          this.fileName = this.isReturningValidFile(fileName,  e.target);
         }).catch(error => console.error(error))
-    } else {
-      inputFile.value = "";
-      return alert(
-        "Merci de bien vouloir sélectionner un fichier en format .jpg .jpeg ou .png"
-      );
-    }
   }
   handleSubmit = e => {
     e.preventDefault()
