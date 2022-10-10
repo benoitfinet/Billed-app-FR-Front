@@ -107,7 +107,7 @@ describe("Given I am connected as an employee", () => {
       expect(handleChangeFile).toHaveBeenCalled();
       expect(handleChangeFile).toThrowError(Error);
     })
-    test("Then it should throw and error when file as the wrong format", () => {
+    test("Then it should accept the file when it as the right format", () => {
       
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
@@ -139,114 +139,6 @@ describe("Given I am connected as an employee", () => {
 
       expect(handleChangeFile).toHaveBeenCalled();
       expect(handleChangeFile).toBeTruthy();
-    })
-  })
-})
-
-describe("Given I am connected as an employee", () => {
-  describe("When I am on NewBill Page", () => {
-    describe("When I submit a new bill", () => {
-      describe("When the file format is right", () => {
-        test("Then it should validate the form and send me to the bills page", async ()=> {
-          Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-          window.localStorage.setItem('user', JSON.stringify({
-            type: 'Employee'
-          }))
-    
-          const root = document.createElement("div");
-          root.setAttribute("id", "root");
-    
-          document.body.append(root);
-    
-          router();
-          window.onNavigate(ROUTES_PATH.NewBill);
-    
-          const newBill = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage
-          })
-
-          const formNewBill = screen.getAllByTestId('form-new-bill')[1]
-
-          const type = screen.getAllByTestId('expense-type')[1]
-          fireEvent.change(type, {
-            target: {
-              value: "Services en ligne"
-            }
-          });
-          expect(type.value).toBe("Services en ligne");
-
-          const name = screen.getAllByTestId('expense-name')[1]
-          fireEvent.change(name, {
-            target: {
-              value: "Nouveau téléphone"
-            }
-          });
-          expect(name.value).toBe("Nouveau téléphone");
-
-          const amount = screen.getAllByTestId('amount')[1]
-          fireEvent.change(amount, {
-            target: {
-              value: 89
-            }
-          });
-          expect(amount.value).toBe("89");
-
-          const date = screen.getAllByTestId('datepicker')[1]
-          fireEvent.change(date, {
-            target: {
-              value: "2022-09-26"
-            }
-          });
-          expect(date.value).toBe("2022-09-26");
-
-          const vat = screen.getAllByTestId('vat')[1]
-          fireEvent.change(vat, {
-            target: {
-              value: 20
-            }
-          });
-          expect(vat.value).toBe("20");
-
-          const pct = screen.getAllByTestId('pct')[1]
-          fireEvent.change(pct, {
-            target: {
-              value: 8
-            }
-          });
-          expect(pct.value).toBe("8");
-
-          const commentary = screen.getAllByTestId('commentary')[1]
-          fireEvent.change(commentary, {
-            target: {
-              value: "Ceci est un commentaire"
-            }
-          });
-          expect(commentary.value).toBe("Ceci est un commentaire")
-
-          const file = screen.getAllByTestId('file')[1]
-          fireEvent.change(file, {
-            target: {
-              files: [new File(['test'], 'test.png', {
-                type: 'image/png'
-              })]
-            }
-          })
-
-          const handleSubmit = jest.fn((e) => newBill.handleSubmit(e))
-
-          formNewBill.addEventListener("submit", handleSubmit)
-          fireEvent.submit(formNewBill)
-
-          expect(handleSubmit).toHaveBeenCalled();
-          expect(handleSubmit).toBeTruthy();
-
-          router()
-          window.onNavigate(ROUTES_PATH["Bills"]);
-
-          await waitFor(() => screen.getByTestId('icon-window'))
-          const windowIcon = screen.getByTestId('icon-window')
-          expect(windowIcon.classList).toContain(`active-icon`);
-        })
-      })
     })
   })
 })
